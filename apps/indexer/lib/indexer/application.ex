@@ -5,6 +5,7 @@ defmodule Indexer.Application do
 
   use Application
 
+  #  create aliases for various modules to simplify their usage within this module.
   alias Indexer.Fetcher.{CoinBalanceOnDemand, FirstTraceOnDemand, TokenTotalSupplyOnDemand}
   alias Indexer.Memory
   alias Indexer.Prometheus.PendingBlockOperationsCollector
@@ -14,6 +15,7 @@ defmodule Indexer.Application do
   def start(_type, _args) do
     Registry.register_collector(PendingBlockOperationsCollector)
 
+    # get the memory monitor in env
     memory_monitor_options =
       case Application.get_env(:indexer, :memory_limit) do
         nil -> %{}
@@ -22,6 +24,7 @@ defmodule Indexer.Application do
 
     memory_monitor_name = Memory.Monitor
 
+    # get json rpc
     json_rpc_named_arguments = Application.fetch_env!(:indexer, :json_rpc_named_arguments)
 
     base_children = [

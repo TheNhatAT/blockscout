@@ -56,9 +56,11 @@ defmodule Indexer.Supervisor do
       type: :supervisor
     }
 
+    # call the child_spec/2 function of the Supervisor module
     Supervisor.child_spec(default, [])
   end
 
+  # start gen_server process under the supervisor
   def start_link(arguments, gen_server_options \\ []) do
     Supervisor.start_link(__MODULE__, arguments, Keyword.put_new(gen_server_options, :name, __MODULE__))
   end

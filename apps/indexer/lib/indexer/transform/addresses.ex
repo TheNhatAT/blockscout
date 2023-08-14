@@ -506,7 +506,9 @@ defmodule Indexer.Transform.Addresses do
     end)
   end
 
+  #
   defp extract_field(%{from: from_attribute, to: to_attribute}, item, %__MODULE__{pending: pending}) do
+    # get the value from item (item is a map)
     case Map.fetch(item, from_attribute) do
       {:ok, value} when not is_nil(value) or (to_attribute == :fetched_coin_balance_block_number and pending) ->
         {:ok, %{to_attribute => value}}

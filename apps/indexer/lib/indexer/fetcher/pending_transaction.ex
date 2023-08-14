@@ -5,13 +5,20 @@ defmodule Indexer.Fetcher.PendingTransaction do
   *NOTE*: Pending transactions are imported with with `on_conflict: :nothing`, so that they don't overwrite their own
   validated version that may make it to the database first.
   """
+
+  # apply and execute code from one or more given modules within the current module.
   use GenServer
   use Indexer.Fetcher, restart: :permanent
 
+  # load and make functions and macros from another module available in the current module
+  # without importing the module's functions as functions
   require Logger
 
+  # bring functions and macros from another module into the current module,
+  # allowing you to call those functions and macros without explicitly specifying the module name
   import EthereumJSONRPC, only: [fetch_pending_transactions: 1]
 
+  # create aliases for module names
   alias Ecto.Changeset
   alias Explorer.Chain
   alias Explorer.Chain.Cache.Accounts
@@ -163,7 +170,11 @@ defmodule Indexer.Fetcher.PendingTransaction do
     end
   end
 
+
+  # import data into the database
   defp import_chunk(transactions_params) do
+
+    # use transform to extract addresses from transactions
     addresses_params = Addresses.extract_addresses(%{transactions: transactions_params}, pending: true)
 
     # There's no need to queue up fetching the address balance since theses are pending transactions and cannot have
